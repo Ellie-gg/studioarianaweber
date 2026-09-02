@@ -8,9 +8,12 @@ export const site = {
   locale: "pt-BR",
   country: "BR",
   currency: "BRL",
-  canonical: TODO_CLIENTE,
+  canonical: "https://studio-ariana-weber-estetica.eliel-garcia910176.chatgpt.site",
   whatsappNumber: TODO_CLIENTE,
-  address: TODO_CLIENTE,
+  instagramDirectUrl: "https://ig.me/m/studioarianaweber.estetica",
+  address: "Rua Fagundes Varela, 1633 — Areias, São José — SC, 88113-800",
+  mapsUrl: "https://www.google.com/maps/search/?api=1&query=Rua%20Fagundes%20Varela%2C%201633%2C%20Areias%2C%20S%C3%A3o%20Jos%C3%A9%20SC",
+  locationName: "WF Concept Paris",
   hours: TODO_CLIENTE,
   seo: {
     title: "Studio Ariana Weber Estética | Cuidado que realça",
@@ -27,6 +30,6 @@ export const site = {
 } as const;
 
 export function whatsappLink(message: string) {
-  if (site.whatsappNumber === TODO_CLIENTE) return "#contato";
+  if (site.whatsappNumber === TODO_CLIENTE) return site.instagramDirectUrl;
   return `https://wa.me/${site.whatsappNumber.replace(/\D/g, "")}?text=${encodeURIComponent(message)}`;
 }

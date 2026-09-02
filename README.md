@@ -12,9 +12,9 @@ Landing page static-first, mobile-first e preparada para converter visitas do In
 
 ## Dados ainda necessários da cliente
 
-- Número de WhatsApp, endereço, horários, URL canônica e cidade/região.
-- Foto vertical autorizada de Ariana e imagens autorizadas de resultados (antes/depois).
+- Número de WhatsApp e horários de atendimento. Enquanto o número não estiver disponível, os CTAs direcionam para o Instagram Direct.
+- Imagens autorizadas de resultados (antes/depois).
 - Formação, especialidades, duração dos tratamentos, formas de pagamento, políticas de cancelamento/remarcação e cuidados antes/depois.
 - Depoimentos reais aprovados e eventuais informações legais de privacidade.
 
-Enquanto essas informações não forem fornecidas, o projeto usa `TODO_CLIENTE` de forma centralizada e mantém indexação bloqueada.
+Enquanto essas informações não forem fornecidas, o projeto usa `TODO_CLIENTE` de forma centralizada e mantém as seções sem conteúdo confirmado ocultas.
