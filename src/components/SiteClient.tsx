@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { services, type Service } from "@/src/content/services";
 import { site, TODO_CLIENTE, whatsappLink } from "@/src/config/site";
@@ -11,15 +11,28 @@ import { BeforeAfter } from "@/src/components/BeforeAfter";
 const wa = (message: string) => whatsappLink(message);
 const contactLabel = site.whatsappNumber === TODO_CLIENTE ? "Agendar pelo Instagram" : "Agendar pelo WhatsApp";
 export default function SiteClient() {
-  const [menu, setMenu] = useState(false), [solid, setSolid] = useState(false), [selected, setSelected] = useState<Service | null>(null);
+  const [menu, setMenu] = useState(false), [solid, setSolid] = useState(false), [selected, setSelected] = useState<Service | null>(null), [activeService, setActiveService] = useState(0);
+  const servicesRef = useRef<HTMLDivElement>(null);
   useEffect(() => { const f = () => setSolid(scrollY > 30); addEventListener("scroll", f); return () => removeEventListener("scroll", f); }, []);
+  const syncActiveService = () => {
+    const scroller = servicesRef.current;
+    if (!scroller) return;
+    const center = scroller.scrollLeft + scroller.clientWidth / 2;
+    const cards = Array.from(scroller.children) as HTMLElement[];
+    let nearest = 0, distance = Number.POSITIVE_INFINITY;
+    cards.forEach((card, index) => {
+      const nextDistance = Math.abs(card.offsetLeft + card.clientWidth / 2 - center);
+      if (nextDistance < distance) { nearest = index; distance = nextDistance; }
+    });
+    if (nearest !== activeService) setActiveService(nearest);
+  };
   const cta = (message: string, label: string) => ({ href: wa(message), onClick: () => track("whatsapp_click", { label }) });
   return <>
     <header className={solid ? "header header-solid" : "header"}><a className="brand" href="#inicio"><em>Studio</em> Ariana Weber</a><button className="menu-button" aria-expanded={menu} aria-controls="menu" onClick={() => setMenu(!menu)}>Menu</button><nav id="menu" className={menu ? "nav nav-open" : "nav"}><a href="#tratamentos" onClick={() => setMenu(false)}>Tratamentos</a>{site.features.results && <a href="#resultados" onClick={() => setMenu(false)}>Resultados</a>}<a href="#sobre" onClick={() => setMenu(false)}>Sobre</a><a href="#contato" onClick={() => setMenu(false)}>Contato</a><a className="button button-small" {...cta(site.messages.default, "header")}>Agendar</a></nav></header>
     <main>
       <section className="hero" id="inicio"><div className="silk-fallback" /><SilkCanvas /><div className="hero-content"><p className="eyebrow">Estética com presença e escuta</p><h1>Realçar não é mudar.<br /><i>É revelar.</i></h1><p className="hero-copy">Protocolos faciais e corporais pensados para valorizar o que já é seu, com cuidado, técnica e atendimento personalizado.</p><div className="hero-actions"><a className="button" {...cta(site.messages.default, "hero")}>{contactLabel} <span>↗</span></a><a className="text-link" href="#tratamentos">Conhecer os tratamentos <span>↓</span></a></div></div><div className="portrait"><Image src="/images/ariana-hero.webp" alt="Ariana Weber em seu espaço de estética em São José" fill priority sizes="(max-width: 800px) 190px, 360px" /></div><p className="scroll-cue">deslize para sentir</p></section>
       <section className="trust"><p>Atendimento personalizado</p><span>✦</span><p>Protocolos faciais e corporais</p><span>✦</span><p>Areias, São José — SC</p></section>
-      <section className="section services" id="tratamentos"><p className="eyebrow">Seu momento, seu ritmo</p><h2>Tratamentos que começam <i>com escuta.</i></h2><p className="intro">Cada escolha é um convite para cuidar de você com presença. Conheça as possibilidades e encontre o seu próximo ritual.</p><div className="service-stack">{services.map((service, index) => <article className="service-card" key={service.name} style={{ top: `${100 + index * 18}px` }}><p className="card-number">{String(index + 1).padStart(2, "0")} — {service.category}</p><h3>{service.name}</h3><p>{service.description}</p><button onClick={() => { setSelected(service); track("service_view", { service: service.name }); }}>Descobrir o ritual <span>↗</span></button></article>)}</div></section>
+      <section className="section services" id="tratamentos"><p className="eyebrow">Seu momento, seu ritmo</p><h2>Tratamentos que começam <i>com escuta.</i></h2><p className="intro">Cada escolha é um convite para cuidar de você com presença. Conheça as possibilidades e encontre o seu próximo ritual.</p><div className="service-mobile-nav" aria-hidden="true"><span>{String(activeService + 1).padStart(2, "0")} / {String(services.length).padStart(2, "0")}</span><span>Deslize para descobrir&nbsp; →</span></div><div className="service-stack" ref={servicesRef} onScroll={syncActiveService}>{services.map((service, index) => <article className={`service-card${activeService === index ? " service-card-active" : ""}`} data-number={String(index + 1).padStart(2, "0")} key={service.name} style={{ top: `${100 + index * 18}px` }}><p className="card-number">{String(index + 1).padStart(2, "0")} — {service.category}</p><h3>{service.name}</h3><p>{service.description}</p><button onClick={() => { setSelected(service); track("service_view", { service: service.name }); }}>Descobrir o ritual <span>↗</span></button></article>)}</div></section>
       {site.features.results && <section className="section results" id="resultados"><p className="eyebrow">Resultados reais, quando compartilhados</p><h2>Cada corpo tem sua própria <i>história.</i></h2><div className="results-grid"><BeforeAfter /><div><p className="result-lead">Resultados compartilhados com autorização.</p><p className="muted">Resultados variam entre pessoas. Uma conversa atenta é sempre o primeiro passo.</p></div></div></section>}
       <section className="section about" id="sobre"><div className="about-image"><Image src="/images/ariana-about.webp" alt="Ariana Weber usando jaleco em seu espaço de atendimento" fill sizes="(max-width: 800px) 88vw, 38vw" /></div><div><p className="eyebrow">Sobre Ariana</p><h2>Cuidar é revelar aquilo que já <i>é seu.</i></h2><p>Ariana acredita em uma estética que acolhe, observa e respeita. Aqui, cada atendimento é construído para que você se sinta vista — sem excessos, sem fórmulas prontas.</p><p className="muted">Atendimento personalizado em Areias, São José, no espaço {site.locationName}.</p></div></section>
       <section className="contact" id="contato"><p className="eyebrow">Seu tempo de se escolher</p><h2>Vamos conversar sobre o seu <i>cuidado?</i></h2><p>Conte o que você está buscando. Ariana te orienta para encontrar o melhor caminho para o seu momento.</p><a className="button button-light" {...cta(site.messages.default, "final")}>{contactLabel} <span>↗</span></a><div className="contact-meta"><a href={site.instagramUrl} target="_blank" rel="noreferrer">{site.instagram}</a><a href={site.mapsUrl} target="_blank" rel="noreferrer">{site.address}</a></div></section>
