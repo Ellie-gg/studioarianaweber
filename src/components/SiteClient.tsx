@@ -1,0 +1,29 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { services, type Service } from "@/src/content/services";
+import { site, whatsappLink } from "@/src/config/site";
+import { track } from "@/src/lib/analytics";
+import { SilkCanvas } from "@/src/components/effects/SilkCanvas";
+import { BeforeAfter } from "@/src/components/BeforeAfter";
+
+const wa = (message: string) => whatsappLink(message);
+export default function SiteClient() {
+  const [menu, setMenu] = useState(false), [solid, setSolid] = useState(false), [selected, setSelected] = useState<Service | null>(null);
+  useEffect(() => { const f = () => setSolid(scrollY > 30); addEventListener("scroll", f); return () => removeEventListener("scroll", f); }, []);
+  const cta = (message: string, label: string) => ({ href: wa(message), onClick: () => track("whatsapp_click", { label }) });
+  return <>
+    <header className={solid ? "header header-solid" : "header"}><a className="brand" href="#inicio"><em>Studio</em> Ariana Weber</a><button className="menu-button" aria-expanded={menu} aria-controls="menu" onClick={() => setMenu(!menu)}>Menu</button><nav id="menu" className={menu ? "nav nav-open" : "nav"}><a href="#tratamentos" onClick={() => setMenu(false)}>Tratamentos</a><a href="#resultados" onClick={() => setMenu(false)}>Resultados</a><a href="#sobre" onClick={() => setMenu(false)}>Sobre</a><a href="#contato" onClick={() => setMenu(false)}>Contato</a><a className="button button-small" {...cta(site.messages.default, "header")}>Agendar</a></nav></header>
+    <main>
+      <section className="hero" id="inicio"><div className="silk-fallback" /><SilkCanvas /><div className="hero-content"><p className="eyebrow">Estética com presença e escuta</p><h1>Realçar não é mudar.<br /><i>É revelar.</i></h1><p className="hero-copy">Protocolos faciais e corporais pensados para valorizar o que já é seu, com cuidado, técnica e atendimento personalizado.</p><div className="hero-actions"><a className="button" {...cta(site.messages.default, "hero")}>Agendar pelo WhatsApp <span>↗</span></a><a className="text-link" href="#tratamentos">Conhecer os tratamentos <span>↓</span></a></div></div><div className="portrait" role="img" aria-label="Espaço reservado para fotografia vertical autorizada de Ariana Weber"><div className="portrait-note">Retrato de Ariana<br /><small>TODO_CLIENTE</small></div></div><p className="scroll-cue">deslize para sentir</p></section>
+      <section className="trust"><p>Atendimento personalizado</p><span>✦</span><p>Protocolos faciais e corporais</p><span>✦</span><p>Com hora marcada</p></section>
+      <section className="section services" id="tratamentos"><p className="eyebrow">Seu momento, seu ritmo</p><h2>Tratamentos que começam <i>com escuta.</i></h2><p className="intro">Cada escolha é um convite para cuidar de você com presença. Conheça as possibilidades e encontre o seu próximo ritual.</p><div className="service-stack">{services.map((service, index) => <article className="service-card" key={service.name} style={{ top: `${100 + index * 18}px` }}><p className="card-number">0{index + 1} — {service.category}</p><h3>{service.name}</h3><p>{service.description}</p><button onClick={() => { setSelected(service); track("service_view", { service: service.name }); }}>Descobrir o ritual <span>↗</span></button></article>)}</div></section>
+      <section className="section results" id="resultados"><p className="eyebrow">Resultados reais, quando compartilhados</p><h2>Cada corpo tem sua própria <i>história.</i></h2><div className="results-grid"><BeforeAfter /><div><p className="result-lead">Esta área será publicada somente com imagens reais e autorizadas pela cliente.</p><p className="muted">Resultados variam entre pessoas. Uma conversa atenta é sempre o primeiro passo.</p></div></div></section>
+      <section className="section about" id="sobre"><div className="about-image"><p>Fotografia de Ariana<br /><small>TODO_CLIENTE</small></p></div><div><p className="eyebrow">Sobre Ariana</p><h2>Cuidar é revelar aquilo que já <i>é seu.</i></h2><p>Ariana acredita em uma estética que acolhe, observa e respeita. Aqui, cada atendimento é construído para que você se sinta vista — sem excessos, sem fórmulas prontas.</p><p className="muted">Formação, trajetória e especialidades: TODO_CLIENTE.</p></div></section>
+      <section className="contact" id="contato"><p className="eyebrow">Seu tempo de se escolher</p><h2>Vamos conversar sobre o seu <i>cuidado?</i></h2><p>Conte o que você está buscando. Ariana te orienta para encontrar o melhor caminho para o seu momento.</p><a className="button button-light" {...cta(site.messages.default, "final")}>Agendar pelo WhatsApp <span>↗</span></a><div className="contact-meta"><a href={site.instagramUrl} target="_blank" rel="noreferrer">{site.instagram}</a><span>Atendimento: TODO_CLIENTE</span></div></section>
+    </main>
+    <a className="floating" {...cta(site.messages.default, "floating")}>WhatsApp <span>↗</span></a><a className="mobile-booking" {...cta(site.messages.default, "mobile_fixed")}>Agendar pelo WhatsApp</a>
+    {selected && <div className="dialog-backdrop"><section className="dialog" role="dialog" aria-modal="true" aria-labelledby="dialog-title"><button className="close" aria-label="Fechar" onClick={() => setSelected(null)}>×</button><p className="eyebrow">{selected.category}</p><h2 id="dialog-title">{selected.name}</h2><p>{selected.description}</p><h3>O que este cuidado pode incluir</h3><ul>{selected.benefits.map((b) => <li key={b}>{b}</li>)}</ul><p className="muted">{selected.indication}</p><a className="button" {...cta(site.messages.service(selected.name), `service_${selected.name}`)}>Quero saber mais sobre este tratamento</a></section></div>}
+    <footer><span>© {new Date().getFullYear()} {site.name}</span><a href={site.instagramUrl} target="_blank" rel="noreferrer">Instagram</a><span>Política de privacidade: TODO_CLIENTE</span></footer>
+  </>;
+}
