@@ -9,7 +9,7 @@ export const site = {
   country: "BR",
   currency: "BRL",
   canonical: "https://studio-ariana-weber-estetica.eliel-garcia910176.chatgpt.site",
-  whatsappNumber: TODO_CLIENTE,
+  whatsappNumber: "5548988221438",
   instagramDirectUrl: "https://ig.me/m/studioarianaweber.estetica",
   address: "Rua Fagundes Varela, 1633 — Areias, São José — SC, 88113-800",
   mapsUrl: "https://www.google.com/maps/search/?api=1&query=Rua%20Fagundes%20Varela%2C%201633%2C%20Areias%2C%20S%C3%A3o%20Jos%C3%A9%20SC",

@@ -12,7 +12,7 @@ Landing page static-first, mobile-first e preparada para converter visitas do In
 
 ## Dados ainda necessários da cliente
 
-- Número de WhatsApp e horários de atendimento. Enquanto o número não estiver disponível, os CTAs direcionam para o Instagram Direct.
+- Horários de atendimento.
 - Imagens autorizadas de resultados (antes/depois).
 - Formação, especialidades, duração dos tratamentos, formas de pagamento, políticas de cancelamento/remarcação e cuidados antes/depois.
 - Depoimentos reais aprovados e eventuais informações legais de privacidade.
